@@ -1,0 +1,174 @@
+@charset "utf-8";
+$focusWidth: 1px;
+$focusColor: #3e3e3e;
+$inputTextColor: #000;
+$optionTextColor: #000;
+$exActiveBgColor: #dfdfdf;
+$wrapBorderWidth: 1px;
+$wrapBorderColor: black;
+$optionBorderWidth: 1px;
+$optionBorderColor: gray;
+$paddingHorizon: 10px;
+$paddingVertical: 5px;
+$fontSize: 13px;
+$allowSize: 5px;
+
+$z-index: (
+    normalWrap: 1, // 전체 웹
+    activeWrap: 2, // 활성화 되었을 때 // 다른 드롭매뉴와 겹침 방지
+    //
+    frontDecoration: 3, // input의 포커스 시 생기는 아웃라인
+    front: 4,  // input
+    option: 2, // 드롭된 매뉴
+    dim: 1
+);
+
+@function z-index($key) {
+    @return map-get($z-index, $key);
+}
+
+.selecput {
+    z-index: z-index(normalWrap);
+    position: relative;
+    font-size: $fontSize;
+
+    .i {
+        &:before {
+            z-index: z-index(frontDecoration);
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            width: 100%;
+            height: 100%;
+            outline: $focusWidth solid $focusColor;
+            content: "";
+        }
+
+        &:after {
+            z-index: z-index(front);
+            position: absolute;
+            top: 0;
+            right: $allowSize * 2;
+            bottom: 0;
+            width: $allowSize;
+            height: $allowSize;
+            margin: auto;
+            border: 1px solid $wrapBorderColor;
+            border-top: 0;
+            border-left: 0;
+            transform: rotate(45deg);
+            transition: transform .4s;
+            content: "";
+        }
+    }
+
+    /* .dim {
+        z-index: z-index(dim);
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: none;
+        opacity: .3;
+        background: #fff;
+    } */
+
+    .input {
+        z-index: z-index(front);
+        position: relative;
+        display: block;
+        overflow: hidden;
+        width: 100%;
+        padding: $paddingVertical #{$paddingHorizon + $allowSize * 2} $paddingVertical $paddingHorizon;
+        font: inherit;
+        color: $inputTextColor;
+        text-overflow: ellipsis;
+        box-sizing: border-box;
+        border: $wrapBorderWidth solid $wrapBorderColor;
+        cursor: pointer;
+        background: 0;
+
+        &:not([readonly]) {
+            & + .i:after {
+                transform: rotate(45deg) scaleX(-1);
+            }
+
+            &:focus {
+                & + .i:after {
+                    animation: cursor .5s alternate infinite;
+                }
+            }
+        }
+
+        &:focus {
+            & + i:before {
+                display: block;
+            }
+        }
+
+        &:disabled {
+            color: $inputTextColor;
+        }
+    }
+
+    &.open {
+        z-index: z-index(activeWrap);
+
+        .i:after {
+            transform: rotate(-45deg) scaleY(-1);
+        }
+
+        div {
+            display: block;
+        }
+
+        /* .dim {
+            display: block;
+        } */
+    }
+
+    div {
+        z-index: z-index(option);
+        position: absolute;
+        display: none;
+        width: 100%;
+        color: $optionTextColor;
+        background: #fff;
+
+        p {
+            margin: -$optionBorderWidth 0 0;
+            padding: $paddingVertical $paddingHorizon;
+            box-sizing: border-box;
+            border: 1px solid $optionBorderColor;
+            word-break: break-all;
+            cursor: pointer;
+
+            &[data-placeholder] {
+                &:before {
+                    content: attr(data-placeholder) ": ";
+                }
+            }
+
+            &.selected {
+                background: $exActiveBgColor;
+            }
+
+            &:focus {
+                outline: $focusWidth solid $focusColor;
+            }
+        }
+    }
+}
+
+@keyframes cursor {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
