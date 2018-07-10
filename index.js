@@ -1,5 +1,5 @@
 /*
-  selecput v0.1.0	 selecput v0.1.0
+  selecput v0.1.0
   http:/github.com/uiwwnw/selecput/
   copyright uiwwnw
 */
