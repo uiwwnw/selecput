@@ -21,6 +21,7 @@ new selecput('.ddd', {
   absoluteClose: true // 열렸을때 어딜 누르든 닫히는 옵션, 기본 false;
 });
 ```
+
 selecput v0.1.0
 http:/github.com/uiwwnw/selecput/
 copyright uiwwnw
