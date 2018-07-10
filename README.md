@@ -7,17 +7,20 @@
 ```javascript
   new selecput('jQuery Selector'); /// You can use jQuery Selector ex) class=> . , id => #, tagname => tagname
 ```
-1. 클래스명 변경 change class name
-```javascript
-  new selecput('jQuery Selector', {
-    inputClass: '',
-    etc...
-  });
-```
 1. 콜백 callback
 ```javascript
   new selecput('css선택자', {
-    onLoad: function() {}, // 로드 완료
-    onChange: function() {} // 값이변할때
+    onLoad: function(e) {}, // 로드 완료
+    onChange: function(e) {} // 값이변할때
   });
 ```
+1. 옵션 option
+```javascript
+new selecput('.ddd', {
+  editAble: 'adwdwdwadawdaqw', // 수정하는 옵션의 value 값
+  absoluteClose: true // 열렸을때 어딜 누르든 닫히는 옵션, 기본 false;
+});
+```
+selecput v0.1.0
+http:/github.com/uiwwnw/selecput/
+copyright uiwwnw
