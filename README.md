@@ -23,6 +23,6 @@ new selecput('.ddd', {
 ```
 [jsfiddle's demo](https://jsfiddle.net/uiwwnw/h21opkv6/)
 
-#### selecput v0.1.0 
+#### selecput v0.1.1 
 #### http:/github.com/uiwwnw/selecput/
 #### copyright uiwwnw

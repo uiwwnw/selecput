@@ -1,5 +1,5 @@
 /*
-  selecput v0.1.0
+  selecput v0.1.1
   http:/github.com/uiwwnw/selecput/
   copyright uiwwnw
 */
@@ -92,8 +92,10 @@ var selecput = function(el, opt) {
       (ctr.selecput[i].option[j].value !== null) && (_p.setAttribute('data-value', ctr.selecput[i].option[j].value));
       (ctr.selecput[i].option[j].value !== null && ctr.selecput[i].option[j].value === ctr.editAble) && (_p.setAttribute('data-placeholder', ctr.selecput[i].option[j].text));
       (ctr.selecput[i].option[j].text !== null) && (_p.innerText = ctr.selecput[i].option[j].text);
+      _p.setAttribute('tabindex', '0');
       ctr.selecput[i].option[j].el = _p;
       ctr.selecput[i].el.append(_p);
+      _this.optionFocusBlur(i, j);
     }
     _this.repeat(makeOption, ctr.selecput[i].option.length);
     ctr.el[i].innerHTML = '';
@@ -108,16 +110,16 @@ var selecput = function(el, opt) {
     //console.log(parents);
     parents = parents === undefined ? document : parents;
     switch (e[0]) {
-      case '.':
-        _e = parents.getElementsByClassName(e.substr(1));
-        break;
-      case '#':
-        _e = [];
-        _e[0] = parents.getElementById(e.substr(1));
-        break;
-      default:
-        _e = parents.getElementsByTagName(e);
-        break;
+    case '.':
+      _e = parents.getElementsByClassName(e.substr(1));
+      break;
+    case '#':
+      _e = [];
+      _e[0] = parents.getElementById(e.substr(1));
+      break;
+    default:
+      _e = parents.getElementsByTagName(e);
+      break;
     }
     return _e;
   };
@@ -127,30 +129,53 @@ var selecput = function(el, opt) {
       ctr.selecput[i].el.childNodes[j].onclick = function() {
         _this.value(this, i);
       };
+      ctr.selecput[i].el.childNodes[j].onkeypress = function() {
+        if (window.event.keyCode === 13) {
+          _this.value(this, i);
+        }
+      };
     }
   };
   this.inputClick = function(i) {
-    ctr.selecput[i].input.onclick = function() {
+    ctr.selecput[i].input.onmousedown = function() {
       _this.open(i);
     };
+    ctr.selecput[i].input.onkeypress = function() {
+        if (window.event.keyCode === 13) {
+        _this.open(i);
+      }
+    };
   };
-  this.inputFocus = function(i) {
+  this.inputFocusBlur = function(i) {
     ctr.selecput[i].input.onfocus = function() {
-      if (ctr.selecput[i].input.getAttribute('readonly') === null) {
-        ctr.selecput[i].sto = setTimeout(function() {
-          ctr.el[i].setAttribute('data-focus', true);
-        }, 200);
-      }
+      //if (ctr.selecput[i].input.getAttribute('readonly') === null) {
+      ctr.selecput[i].sto = setTimeout(function() {
+        ctr.el[i].setAttribute('data-focus', 'input');
+      }, 10);
+      //}
     };
-  };
-  this.inputBlur = function(i) {
     ctr.selecput[i].input.onblur = function() {
-      if (ctr.selecput[i].input.getAttribute('readonly') === null) {
+      //if (ctr.selecput[i].input.getAttribute('readonly') === null) {
+      ctr.selecput[i].sto = setTimeout(function() {
         ctr.el[i].removeAttribute('data-focus');
-      }
+      }, 10);
+      //}
+      _this.absoluteClose(i);
     };
   };
-
+  this.optionFocusBlur = function(i, j) {
+    ctr.selecput[i].option[j].el.onfocus = function() {
+      ctr.selecput[i].sto = setTimeout(function() {
+        ctr.el[i].setAttribute('data-focus', 'option');
+      }, 10);
+    };
+    ctr.selecput[i].option[j].el.onblur = function() {
+      ctr.selecput[i].sto = setTimeout(function() {
+        ctr.el[i].removeAttribute('data-focus');
+      }, 10);
+      _this.absoluteClose(i);
+    };
+  };
   this.variables = function(i) {
     var _selected = false;
     var _i;
@@ -179,6 +204,7 @@ var selecput = function(el, opt) {
       class: _e.getAttribute('class'),
       id: _e.getAttribute('id'),
       name: _e.getAttribute('name'),
+      focus: false,
       option: _option
     };
     //console.log(ctr.selecput[i]);
@@ -187,13 +213,13 @@ var selecput = function(el, opt) {
   this.open = function(i) {
     if (ctr.el[i].getAttribute('data-focus') !== null || ctr.selecput[i].input.getAttribute('readonly') !== null) {
       ctr.selecput[i].active = ctr.el[i];
-      if (!_this.hasClass(ctr.el[i], ctr.openClass)) {
-        _this.absoluteClose(i);
-      }
       _this.toggleClass(ctr.el[i], ctr.openClass);
     }
   };
   this.close = function(i) {
+    if (ctr.selecput[i].active === undefined) {
+      return false;
+    }
     _this.removeClass(ctr.selecput[i].active, ctr.openClass);
   };
   this.value = function(el, i) {
@@ -222,24 +248,29 @@ var selecput = function(el, opt) {
     _this.close(i);
   };
   this.typing = function(i) {
-    ctr.selecput[i].input.onchange = function() {
-      ctr.selecput[i].text = this.value;
-      _this.querySelector('.' + ctr.selectedClass, ctr.selecput[i].el)[0].innerText = ctr.selecput[i].text;
-      (ctr.onChange !== undefined) && (_this.onChange(ctr.onChange));
+    ctr.selecput[i].input.onkeypress = function() {
+        if (window.event.keyCode === 13) {
+        if (ctr.selecput[i].text !== this.value) {
+          //(_this.hasClass(ctr.selecput[i].el, ctr.openClass))&&();
+          ctr.selecput[i].text = this.value;
+          _this.querySelector('.' + ctr.selectedClass, ctr.selecput[i].el)[0].innerText = ctr.selecput[i].text;
+          (ctr.onChange !== undefined) && (_this.onChange(ctr.onChange));
+          alert('값이 변경되었습니다.');
+          _this.close(i);
+        } else {
+          _this.open(i);
+        }
+      }
     };
   };
   this.absoluteClose = function(i) {
     if (ctr.absoluteClose === undefined) {
       return false;
     }
-    var _remove = function() {
-      _this.removeClass(ctr.selecput[i].active, ctr.openClass);
-      document.removeEventListener('click', _remove);
-    };
     clearTimeout(ctr.absoluteClose);
     ctr.absoluteClose = setTimeout(function(e) {
-      document.addEventListener('click', _remove);
-    }, 200);
+      (ctr.el[i].getAttribute('data-focus') === null) && (_this.close(i));
+    }, 30);
   };
   this.onChange = function(fn) {
     new fn(ctr);
@@ -262,8 +293,7 @@ var selecput = function(el, opt) {
     new _this.repeat(_this.variables, ctr.lengths);
     new _this.repeat(_this.makeDom, ctr.lengths);
     new _this.repeat(_this.inputClick, ctr.lengths);
-    new _this.repeat(_this.inputFocus, ctr.lengths);
-    new _this.repeat(_this.inputBlur, ctr.lengths);
+    new _this.repeat(_this.inputFocusBlur, ctr.lengths);
     new _this.repeat(_this.optionClick, ctr.lengths);
     (ctr.editAble !== undefined) && (new _this.repeat(_this.typing, ctr.lengths));
   };
