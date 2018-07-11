@@ -1,5 +1,5 @@
 /*
-  selecput v0.1.1
+  selecput v0.1.2
   http:/github.com/uiwwnw/selecput/
   copyright uiwwnw
 */
@@ -71,8 +71,10 @@ var selecput = function(el, opt) {
     (ctr.selecput[i].name !== null) && (ctr.selecput[i].el.setAttribute('name', ctr.selecput[i].name));
 
     ctr.selecput[i].input = document.createElement('input');
-    if (ctr.selecput[i].value === ctr.editAble) {
-      ctr.selecput[i].input.setAttribute('placeholder', ctr.selecput[i].text);
+    (ctr.selecput[i].text === undefined ||ctr.selecput[i].text === null) && (ctr.selecput[i].text = '');
+    if (ctr.selecput[i].placeholder !== null) {
+      ctr.selecput[i].input.setAttribute('value', ctr.selecput[i].text);
+      ctr.selecput[i].input.setAttribute('placeholder', ctr.selecput[i].placeholder);
     } else {
       ctr.selecput[i].input.setAttribute('readonly', '');
       ctr.selecput[i].input.setAttribute('value', ctr.selecput[i].text);
@@ -90,7 +92,7 @@ var selecput = function(el, opt) {
       var _p = document.createElement('p');
       (ctr.selecput[i].option[j].selected !== null) && (_this.addClass(_p, ctr.selectedClass));
       (ctr.selecput[i].option[j].value !== null) && (_p.setAttribute('data-value', ctr.selecput[i].option[j].value));
-      (ctr.selecput[i].option[j].value !== null && ctr.selecput[i].option[j].value === ctr.editAble) && (_p.setAttribute('data-placeholder', ctr.selecput[i].option[j].text));
+      (ctr.selecput[i].option[j].placeholder !== null ) && (_p.setAttribute('data-placeholder', ctr.selecput[i].option[j].placeholder));
       (ctr.selecput[i].option[j].text !== null) && (_p.innerText = ctr.selecput[i].option[j].text);
       _p.setAttribute('tabindex', '0');
       ctr.selecput[i].option[j].el = _p;
@@ -186,21 +188,23 @@ var selecput = function(el, opt) {
       var __option = {
         value: _this.querySelector('option', _e)[i].getAttribute('value'),
         selected: _this.querySelector('option', _e)[i].getAttribute('selected'),
-        text: _this.querySelector('option', _e)[i].innerText
+        text: _this.querySelector('option', _e)[i].innerText,
+        placeholder: _this.querySelector('option', _e)[i].getAttribute('data-placeholder')
       };
-      (__option.selected !== null) && (_selected = [__option.value, __option.text]);
+      (__option.selected !== null) && (_selected = [__option.value, __option.text, __option.placeholder]);
       (__option.selected !== null) && (_i = i);
       _option.push(__option);
     }
     _this.repeat(makeOption, _e.length);
     if (!_selected) {
-      _selected = [_option[0].value, _option[0].text];
+      _selected = [_option[0].value, _option[0].text, __option.placeholder];
       _i = 0;
     }
     ctr.selecput[i] = {
       activeOption: _this.querySelector('option', _e)[_i],
       value: _selected[0],
       text: _selected[1],
+      placeholder: _selected[2],
       class: _e.getAttribute('class'),
       id: _e.getAttribute('id'),
       name: _e.getAttribute('name'),
@@ -228,17 +232,18 @@ var selecput = function(el, opt) {
       var _placeholder = el.getAttribute('data-placeholder');
       ctr.selecput[i].value = el.getAttribute('data-value');
       ctr.selecput[i].text = el.innerText;
+      (ctr.selecput[i].text === undefined) && (ctr.selecput[i].text = '');
       ctr.selecput[i].input.setAttribute('data-value', ctr.selecput[i].value);
       if (_placeholder !== null) {
-        ctr.selecput[i].input.setAttribute('placeholder', ctr.selecput[i].text);
+        ctr.selecput[i].input.setAttribute('placeholder', _placeholder);
         ctr.selecput[i].input.removeAttribute('readonly');
-        ctr.selecput[i].input.value = '';
+        // ctr.selecput[i].input.value = '';
         ctr.selecput[i].input.focus();
       } else {
         ctr.selecput[i].input.removeAttribute('placeholder');
         ctr.selecput[i].input.setAttribute('readonly', '');
-        ctr.selecput[i].input.value = ctr.selecput[i].text;
       }
+      ctr.selecput[i].input.value = ctr.selecput[i].text;
       //console.log(_this.querySelector('.'+ctr.selectedClass, ctr.selecput[i].el));
       _this.removeClass(_this.querySelector('.' + ctr.selectedClass, ctr.selecput[i].el)[0], ctr.selectedClass);
       ctr.selecput[i].activeOption = el;
@@ -295,7 +300,7 @@ var selecput = function(el, opt) {
     new _this.repeat(_this.inputClick, ctr.lengths);
     new _this.repeat(_this.inputFocusBlur, ctr.lengths);
     new _this.repeat(_this.optionClick, ctr.lengths);
-    (ctr.editAble !== undefined) && (new _this.repeat(_this.typing, ctr.lengths));
+    (ctr.editAble === true) && (new _this.repeat(_this.typing, ctr.lengths));
   };
   var _this = this;
   var ctr = {};

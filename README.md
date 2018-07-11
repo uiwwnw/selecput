@@ -17,12 +17,14 @@
 1. 옵션 option
 ```javascript
 new selecput('.ddd', {
-  editAble: 'adwdwdwadawdaqw', // 수정하는 옵션의 value 값
-  absoluteClose: true // 열렸을때 어딜 누르든 닫히는 옵션, 기본 false;
+  editAble: true, // 기본 false
+  absoluteClose: true, // 열렸을때 어딜 누르든 닫히는 옵션, 기본 false;
 });
+// editAble 사용 시, option에 placeholder값 기입
+<option value="adwdwdwadawdaqw" data-placeholder="직접입력" >d</option>
 ```
 [jsfiddle's demo](https://jsfiddle.net/uiwwnw/h21opkv6/)
 
-#### selecput v0.1.1 
+#### selecput v0.1.2 
 #### http:/github.com/uiwwnw/selecput/
 #### copyright uiwwnw
