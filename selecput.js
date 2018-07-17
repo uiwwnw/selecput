@@ -4,6 +4,8 @@
   copyright uiwwnw
 */
 var selecput = function(el, opt) {
+  var _this = this;
+  var ctr = {};
   this.hasClass = function(e, name) {
     var classs = e.getAttribute('class');
     if (classs === null || classs === undefined || classs === ' ') {
@@ -301,8 +303,5 @@ var selecput = function(el, opt) {
     new _this.repeat(_this.inputFocusBlur, ctr.lengths);
     new _this.repeat(_this.optionClick, ctr.lengths);
     (ctr.editAble === true) && (new _this.repeat(_this.typing, ctr.lengths));
-  };
-  var _this = this;
-  var ctr = {};
-  this.init();
+  }();
 };
