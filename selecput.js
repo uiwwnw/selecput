@@ -1,7 +1,5 @@
 /*
-  selecput v0.1.2
-  http:/github.com/uiwwnw/selecput/
-  copyright uiwwnw
+  https://uiwwnw.mit-license.org
 */
 var selecput = function(el, opt) {
   var _this = this;
